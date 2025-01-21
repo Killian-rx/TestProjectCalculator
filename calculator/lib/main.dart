@@ -13,19 +13,15 @@ class CalculatorApp extends StatelessWidget {
   }
 }
 
-class CalculatorScreen extends StatefulWidget {
-  @override
-  _CalculatorScreenState createState() => _CalculatorScreenState();
-}
-
-class _CalculatorScreenState extends State<CalculatorScreen> {
+// Classe séparée pour gérer la logique de la calculatrice
+class CalculatorLogic {
   String output = "0";
   String _output = "0";
   double num1 = 0;
   double num2 = 0;
   String operand = "";
 
-  buttonPressed(String buttonText) {
+  void buttonPressed(String buttonText) {
     if (buttonText == "CLEAR") {
       _output = "0";
       num1 = 0;
@@ -55,15 +51,28 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
       _output = _output + buttonText;
     }
 
+    output = double.parse(_output).toStringAsFixed(2);
+  }
+}
+
+class CalculatorScreen extends StatefulWidget {
+  @override
+  _CalculatorScreenState createState() => _CalculatorScreenState();
+}
+
+class _CalculatorScreenState extends State<CalculatorScreen> {
+  final CalculatorLogic calculator = CalculatorLogic(); // Utilisation de la logique
+
+  void buttonPressed(String buttonText) {
     setState(() {
-      output = double.parse(_output).toStringAsFixed(2);
+      calculator.buttonPressed(buttonText);
     });
   }
 
   Widget buildButton(String buttonText) {
     return Expanded(
       child: ElevatedButton(
-        key: Key('button_$buttonText'), // Ajout d'une clé unique pour chaque bouton
+        key: Key('button_$buttonText'), // Clé unique pour les tests
         onPressed: () => buttonPressed(buttonText),
         child: Text(
           buttonText,
@@ -85,8 +94,8 @@ class _CalculatorScreenState extends State<CalculatorScreen> {
             alignment: Alignment.centerRight,
             padding: EdgeInsets.symmetric(vertical: 24, horizontal: 12),
             child: Text(
-              output,
-              key: Key('output_display'), // Ajout d'une clé pour l'affichage principal
+              calculator.output,
+              key: Key('output_display'), // Clé pour le widget d'affichage
               style: TextStyle(fontSize: 48.0, fontWeight: FontWeight.bold),
             ),
           ),

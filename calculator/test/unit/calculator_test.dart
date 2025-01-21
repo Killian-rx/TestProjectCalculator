@@ -1,15 +1,17 @@
 import 'package:flutter_test/flutter_test.dart';
+import 'package:calculator/main.dart';
 
 void main() {
-  group('Calculatrice - Tests unitaires', () {
-    test('Addition', () {
-      double result = 2 + 3;
-      expect(result, 5);
-    });
+  test('Addition logic: 3 + 2 = 5', () {
+    final calculator = CalculatorLogic();
 
-    test('Multiplication', () {
-      double result = 4 * 5;
-      expect(result, 20);
-    });
+    // Simuler les appuis de boutons
+    calculator.buttonPressed('3');
+    calculator.buttonPressed('+');
+    calculator.buttonPressed('2');
+    calculator.buttonPressed('=');
+
+    // Vérifier le résultat
+    expect(calculator.output, '5.00');
   });
 }
